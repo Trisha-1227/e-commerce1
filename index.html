@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple E-commerce Site</title>
+
+    <!-- ====== CSS (inside same file) ====== -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            position: relative;
+        }
+
+        .cart-container {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+
+        .cart-container button {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        main {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+
+        .product {
+            width: 200px;
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px;
+            background: #fff;
+        }
+
+        .product img {
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .add-to-cart {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* ==== Cart Modal ==== */
+        .cart-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cart-modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 300px;
+            text-align: center;
+        }
+
+        #checkout {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        #closeCart {
+            background-color: #dc3545;
+            color: white;
+            padding: 10px;
+            border: none;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <h1>My E-commerce Site</h1>
+        <div class="cart-container">
+            <button id="viewCart">View Cart (0)</button>
+        </div>
+    </header>
+
+    <!-- PRODUCTS -->
+    <main>
+        <div class="products">
+
+            <div class="product">
+                <img src="C:\Trisha\Watch.jpeg" alt="Product 1">
+                <h2>Product 1</h2>
+                <p>$25.00</p>
+                <button class="add-to-cart" data-name="Product 1" data-price="25">Add to Cart</button>
+            </div>
+
+            <div class="product">
+                <img src="C:\Trisha\Perfume.jpg" alt="Product 2">
+                <h2>Product 2</h2>
+                <p>$30.00</p>
+                <button class="add-to-cart" data-name="Product 2" data-price="30">Add to Cart</button>
+            </div>
+
+            <div class="product">
+                <img src="C:\Trisha\Makeup.jfif" alt="Product 3">
+                <h2>Product 3</h2>
+                <p>$15.00</p>
+                <button class="add-to-cart" data-name="Product 3" data-price="15">Add to Cart</button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- CART MODAL -->
+    <div id="cartModal" class="cart-modal">
+        <div class="cart-modal-content">
+            <h2>Your Cart</h2>
+            <ul id="cartItems"></ul>
+            <p>Total: $<span id="totalPrice">0</span></p>
+            <button id="checkout">Checkout</button>
+            <button id="closeCart">Close</button>
+        </div>
+    </div>
+
+    <!-- ====== JavaScript (inside same file) ====== -->
+    <script>
+        let cart = [];
+
+        function updateCartUI() {
+            const cartItemsList = document.getElementById("cartItems");
+            const totalPriceElement = document.getElementById("totalPrice");
+            const viewCartButton = document.getElementById("viewCart");
+
+            cartItemsList.innerHTML = "";
+            let totalPrice = 0;
+
+            cart.forEach(item => {
+                const li = document.createElement("li");
+                li.textContent = `${item.name} - $${item.price} x ${item.quantity}`;
+                cartItemsList.appendChild(li);
+
+                totalPrice += item.price * item.quantity;
+            });
+
+            totalPriceElement.textContent = totalPrice.toFixed(2);
+            viewCartButton.textContent = `View Cart (${cart.length})`;
+        }
+
+        function addToCart(name, price) {
+            const index = cart.findIndex(p => p.name === name);
+
+            if (index === -1) {
+                cart.push({ name, price, quantity: 1 });
+            } else {
+                cart[index].quantity++;
+            }
+            updateCartUI();
+        }
+
+        document.querySelectorAll(".add-to-cart").forEach(btn => {
+            btn.addEventListener("click", () => {
+                addToCart(btn.dataset.name, parseFloat(btn.dataset.price));
+            });
+        });
+
+        document.getElementById("viewCart").addEventListener("click", () => {
+            document.getElementById("cartModal").style.display = "flex";
+        });
+
+        document.getElementById("closeCart").addEventListener("click", () => {
+            document.getElementById("cartModal").style.display = "none";
+        });
+
+        document.getElementById("checkout").addEventListener("click", () => {
+            alert("Order placed successfully!");
+            cart = [];
+            updateCartUI();
+            document.getElementById("cartModal").style.display = "none";
+        });
+    </script>
+
+</body>
+</html>
